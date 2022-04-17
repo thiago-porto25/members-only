@@ -20,6 +20,7 @@ const registerController = (req, res) => {
       email: req.body.email,
       password: hash,
     });
+
     user.save((err, result) => {
       if (err) {
         return res.status(500).json({
@@ -27,7 +28,7 @@ const registerController = (req, res) => {
         });
       }
       res.status(201).json({
-        message: 'User created',
+        msg: 'User created',
         result,
       });
     });
@@ -38,7 +39,7 @@ const becomeMemberController = (req, res) => {
   // Check if secret code is correct
   if (req.body.secretCode === process.env.SECRET_CODE) {
     // Check if user is already a member
-    User.findOne({ email: req.body.email }, (err, user) => {
+    User.findOne({ email: req.body.email }).exec((err, user) => {
       if (err) {
         return res.status(500).json({
           error: err,
@@ -47,11 +48,11 @@ const becomeMemberController = (req, res) => {
 
       if (user.isMember) {
         return res.status(409).json({
-          message: 'User already is a member',
+          msg: 'User already is a member',
         });
       }
 
-      // If not member and code correct, change user to member
+      // If is not a member and code correct, change user to member
       User.updateOne(
         { email: req.body.email },
         { isMember: true },
@@ -62,21 +63,19 @@ const becomeMemberController = (req, res) => {
             });
           }
 
-          return res
-            .status(200)
-            .json({ message: 'You are now a member', result });
+          return res.status(200).json({ msg: 'You are now a member', result });
         }
       );
     });
   } else {
     // If not, return error saying that code is incorrect
-    return res.send({ message: 'Secret code is incorrect' });
+    return res.send({ msg: 'Secret code is incorrect' });
   }
 };
 
 const logoutController = (req, res) => {
   req.logout();
-  res.send({ message: 'logout success' });
+  res.send({ msg: 'logout success' });
 };
 
 module.exports = {

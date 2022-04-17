@@ -10,14 +10,14 @@ const verifyCallback = (username, password, done) => {
     }
 
     if (!user) {
-      return done(null, false, { message: 'Incorrect username.' });
+      return done(null, false, { msg: 'Incorrect username.' });
     }
 
     bcryptjs.compare(password, user.password, (err, isMatch) => {
       if (isMatch) {
         return done(null, user);
       } else {
-        return done(null, false, { message: 'Incorrect password.' });
+        return done(null, false, { msg: 'Incorrect password.' });
       }
     });
 
