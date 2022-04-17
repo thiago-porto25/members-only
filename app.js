@@ -4,8 +4,9 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const session = require('express-session');
 const passport = require('passport');
+const connection = require('./config/database');
 
-const MongoStore = require('connect-mongo');
+const MongoStore = require('connect-mongo')(session);
 require('dotenv').config();
 
 const postsRouter = require('./routes/posts');
@@ -19,10 +20,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // Session setup
-const sessionStore = MongoStore.create({
-  mongoUrl: process.env.MONGO_URI,
+const sessionStore = new MongoStore({
+  mongooseConnection: connection,
   collection: 'sessions',
-  dbName: 'members',
 });
 
 app.use(
