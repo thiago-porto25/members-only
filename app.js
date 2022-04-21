@@ -9,9 +9,6 @@ const MongoStore = require('connect-mongo')(session);
 
 require('dotenv').config();
 
-const postsRouter = require('./routes/posts');
-const usersRouter = require('./routes/users');
-
 const app = express();
 
 app.use(logger('dev'));
@@ -44,6 +41,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Routes setup
+const postsRouter = require('./routes/posts');
+const usersRouter = require('./routes/users');
 app.use('/posts', postsRouter);
 app.use('/users', usersRouter);
 

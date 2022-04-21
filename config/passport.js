@@ -3,31 +3,27 @@ const bcryptjs = require('bcryptjs');
 const LocalStrategy = require('passport-local').Strategy;
 const User = require('../models/user.js');
 
-const verifyCallback = (username, password, done) => {
-  User.findOne({ username }, (err, user) => {
-    if (err) {
-      return done(err);
-    }
-
-    if (!user) {
-      return done(null, false, { msg: 'Incorrect username.' });
-    }
-
-    bcryptjs.compare(password, user.password, (err, isMatch) => {
-      if (isMatch) {
-        return done(null, user);
-      } else {
-        return done(null, false, { msg: 'Incorrect password.' });
+passport.use(
+  'local',
+  new LocalStrategy((username, password, done) => {
+    User.findOne({ username: username }).exec(function (err, user) {
+      if (err) {
+        return done(err);
       }
+      if (!user) {
+        return done(null, false, { msg: 'Incorrect username.' });
+      }
+      bcryptjs.compare(password, user.password, (err, isMatch) => {
+        if (isMatch) {
+          return done(null, user);
+        } else {
+          return done(null, false, { msg: 'Incorrect password.' });
+        }
+      });
+      return done(null, user);
     });
-
-    return done(null, user);
-  });
-};
-
-const strategy = new LocalStrategy(verifyCallback);
-
-passport.use(strategy);
+  })
+);
 
 passport.serializeUser((user, done) => {
   done(null, user.id);

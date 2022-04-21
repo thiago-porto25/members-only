@@ -2,17 +2,8 @@ const bcryptjs = require('bcryptjs');
 const passport = require('passport');
 const User = require('../models/user.js');
 
-function loginController() {
-  passport.authenticate(
-    'local',
-    {
-      successRedirect: '/',
-      failureRedirect: '/',
-    },
-    (req, res) => {
-      res.send({ msg: 'login success' });
-    }
-  );
+function loginController(req, res, next) {
+  passport.authenticate('local')(req, res, next);
 }
 
 function registerController(req, res) {
@@ -24,7 +15,7 @@ function registerController(req, res) {
     }
 
     const user = new User({
-      email: req.body.email,
+      username: req.body.username,
       password: hash,
       isMember: false,
     });
@@ -45,7 +36,7 @@ function registerController(req, res) {
 
 function becomeMemberController(req, res) {
   if (req.body.secretCode === process.env.SECRET_CODE) {
-    User.findOne({ email: req.body.email }).exec(function (err, user) {
+    User.findOne({ username: req.body.username }).exec(function (err, user) {
       if (err) {
         return res.status(500).json({
           error: err,
@@ -59,7 +50,7 @@ function becomeMemberController(req, res) {
       }
 
       User.updateOne(
-        { email: req.body.email },
+        { username: req.body.username },
         { isMember: true },
         function (err, result) {
           if (err) {
