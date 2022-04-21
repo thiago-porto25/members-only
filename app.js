@@ -5,8 +5,8 @@ const logger = require('morgan');
 const session = require('express-session');
 const passport = require('passport');
 const connection = require('./config/database');
-
 const MongoStore = require('connect-mongo')(session);
+
 require('dotenv').config();
 
 const postsRouter = require('./routes/posts');
@@ -16,7 +16,7 @@ const app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Session setup
@@ -32,7 +32,7 @@ app.use(
     saveUninitialized: true,
     store: sessionStore,
     cookie: {
-      maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+      maxAge: 1000 * 60 * 60 * 24, // 1 day
     },
   })
 );
@@ -44,8 +44,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Routes setup
-app.use('/api/v1/posts', postsRouter);
-app.use('/api/v1/users', usersRouter);
+app.use('/posts', postsRouter);
+app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

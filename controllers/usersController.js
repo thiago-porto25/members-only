@@ -1,27 +1,35 @@
 const bcryptjs = require('bcryptjs');
 const passport = require('passport');
-const User = require('../models/User');
+const User = require('../models/user.js');
 
-const loginController = () => {
-  passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/',
-  });
-};
+function loginController() {
+  passport.authenticate(
+    'local',
+    {
+      successRedirect: '/',
+      failureRedirect: '/',
+    },
+    (req, res) => {
+      res.send({ msg: 'login success' });
+    }
+  );
+}
 
-const registerController = (req, res) => {
+function registerController(req, res) {
   bcryptjs.hash(req.body.password, 10, (err, hash) => {
     if (err) {
       return res.status(500).json({
         error: err,
       });
     }
+
     const user = new User({
       email: req.body.email,
       password: hash,
+      isMember: false,
     });
 
-    user.save((err, result) => {
+    user.save(function (err, result) {
       if (err) {
         return res.status(500).json({
           error: err,
@@ -33,13 +41,11 @@ const registerController = (req, res) => {
       });
     });
   });
-};
+}
 
-const becomeMemberController = (req, res) => {
-  // Check if secret code is correct
+function becomeMemberController(req, res) {
   if (req.body.secretCode === process.env.SECRET_CODE) {
-    // Check if user is already a member
-    User.findOne({ email: req.body.email }).exec((err, user) => {
+    User.findOne({ email: req.body.email }).exec(function (err, user) {
       if (err) {
         return res.status(500).json({
           error: err,
@@ -52,11 +58,10 @@ const becomeMemberController = (req, res) => {
         });
       }
 
-      // If is not a member and code correct, change user to member
       User.updateOne(
         { email: req.body.email },
         { isMember: true },
-        (err, result) => {
+        function (err, result) {
           if (err) {
             return res.status(500).json({
               error: err,
@@ -68,15 +73,14 @@ const becomeMemberController = (req, res) => {
       );
     });
   } else {
-    // If not, return error saying that code is incorrect
     return res.send({ msg: 'Secret code is incorrect' });
   }
-};
+}
 
-const logoutController = (req, res) => {
+function logoutController(req, res) {
   req.logout();
   res.send({ msg: 'logout success' });
-};
+}
 
 module.exports = {
   loginController,

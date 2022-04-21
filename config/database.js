@@ -3,11 +3,14 @@ require('dotenv').config();
 
 const dbString = process.env.MONGO_URI;
 
-const connection = mongoose.createConnection(dbString);
+mongoose.connect(dbString, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 mongoose.connection.on(
   'error',
   console.error.bind(console, 'mongo connection error')
 );
 
-module.exports = connection;
+module.exports = mongoose.connection;

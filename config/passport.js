@@ -1,7 +1,7 @@
 const passport = require('passport');
 const bcryptjs = require('bcryptjs');
 const LocalStrategy = require('passport-local').Strategy;
-const User = require('../models/User');
+const User = require('../models/user.js');
 
 const verifyCallback = (username, password, done) => {
   User.findOne({ username }, (err, user) => {

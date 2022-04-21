@@ -6,7 +6,7 @@
     "start": "node ./bin/www",
     "nodemon": "nodemon ./bin/www",
     "dev": "DEBUG=members-only:* npm run nodemon",
-    "test": "jest"
+    "test": "NODE_ENV=test jest"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -17,14 +17,12 @@
     "express": "~4.16.1",
     "express-session": "^1.17.2",
     "http-errors": "~1.6.3",
-    "mongoose": "^6.3.0",
+    "mongoose": "^6.2.0",
     "morgan": "~1.9.1",
     "passport": "^0.5.2",
     "passport-local": "^1.0.0"
   },
   "devDependencies": {
-    "jest": "^27.5.1",
-    "nodemon": "^2.0.15",
-    "supertest": "^6.2.2"
+    "nodemon": "^2.0.15"
   }
 }

@@ -4,7 +4,7 @@ const authMiddleware = require('../middleware/auth');
 const {
   getPostsController,
   createPostsController,
-} = require('../controllers/posts');
+} = require('../controllers/postsController');
 
 router.get('/', getPostsController);
 
